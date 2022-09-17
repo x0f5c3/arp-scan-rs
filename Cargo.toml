@@ -2,7 +2,7 @@
 name = "arp-scan"
 description = "A minimalistic ARP scan tool"
 license = "AGPL-3.0-or-later"
-version = "0.13.0"
+version = "0.13.1"
 authors = ["Saluki"]
 edition = "2021"
 readme = "README.md"
@@ -15,18 +15,19 @@ exclude = ["/.semaphore", "/data", "/release.sh", ".*"]
 [dependencies]
 
 # CLI & utilities
-clap = { version = "3.1", default-features = false, features = ["std", "suggestions", "color"] }
+clap = { version = "3.2", default-features = false, features = ["std", "suggestions", "color"] }
 ansi_term = "0.12"
 rand = "0.8"
 ctrlc = "3.2"
 
 # Network
-pnet = "0.29"
-ipnetwork = "0.18"
+pnet = "0.31"
+pnet_datalink = "0.31"
+ipnetwork = "0.19"
 dns-lookup = "1.0"
 
 # Parsing & exports
 csv = "1.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-serde_yaml = "0.8"
+serde_yaml = "0.8.4"
