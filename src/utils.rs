@@ -5,7 +5,10 @@ use std::sync::Arc;
 use pnet_datalink::NetworkInterface;
 use ipnetwork::{IpNetwork, NetworkSize};
 use serde::Serialize;
+use windows::Win32::System::Threading::{GetCurrentProcess, OpenProcessToken};
+use windows::Win32::Security::{GetTokenInformation, TOKEN_ELEVATION, TOKEN_QUERY, TokenElevation};
 use ansi_term::Color::{Green, Red};
+use windows::Win32::Foundation::HANDLE;
 
 use crate::network::{ResponseSummary, TargetDetails};
 use crate::args::ScanOptions;
@@ -16,6 +19,21 @@ use crate::args::ScanOptions;
  */
 pub fn is_root_user() -> bool {
     env::var("USER").unwrap_or_else(|_| String::from("")) == *"root"
+}
+
+#[cfg(windows)]
+pub fn is_admin() -> bool {
+    let mut current_token_ptr: HANDLE = HANDLE::default();
+    let token_elevation: TOKEN_ELEVATION = TOKEN_ELEVATION::default();
+    let result = unsafe {OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &mut current_token_ptr) };
+    if result.as_bool() {
+        let result = unsafe { GetTokenInformation(current_token_ptr, TokenElevation, None, &mut 0)};
+        if result.as_bool() {
+            return token_elevation.TokenIsElevated != 0;
+        }
+    }
+    false
+
 }
 
 /**
